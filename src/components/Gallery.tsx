@@ -1,10 +1,10 @@
 import Image from "next/image";
-import { SpotifyInfo, SpotifyUrlsInfo, Video } from "~/pages";
+import type { SpotifyInfo, SpotifyUrlsInfo, Video } from "~/pages";
 
 interface Props {
-    data: SpotifyInfo;
+    data: SpotifyInfo | undefined;
     getDownloadUrls: () => void;
-    dataUrls: SpotifyUrlsInfo;
+    dataUrls: SpotifyUrlsInfo | undefined;
     downloadVideo: (index: number) => void;
     isLoading: boolean;
 }

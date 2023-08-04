@@ -1,9 +1,7 @@
 import Head from "next/head";
-import Link from "next/link";
-import { useUser } from "@clerk/nextjs";
 import { api } from "~/utils/api";
-import { ChangeEvent, KeyboardEvent, useEffect, useState } from "react";
-import Image from "next/image";
+import { useState } from "react";
+import type { ChangeEvent, KeyboardEvent } from "react";
 import Search from "~/components/Search";
 import Gallery from "~/components/Gallery";
 
@@ -30,8 +28,6 @@ export interface SpotifyUrlsInfo {
 
 export default function Home() {
   const [searchValue, setSearchValue] = useState("");
-  const [tiktokInfo, setTiktokInfo] = useState({});
-  const user = useUser();
   //info de steam que llega del backend
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
@@ -40,17 +36,17 @@ export default function Home() {
   const spotifyMutation = api.spotify.getData.useMutation();
   const spotifyUrlsMutation = api.spotify.getDowloandUrls.useMutation();
 
-  const { data, isLoading, mutate, error } = spotifyMutation;
-  const { data: dataUrls, isLoading: isLoadingUrls, mutate: mutateUrls, error: errorUrls } = spotifyUrlsMutation;
+  const { data, isLoading, mutate } = spotifyMutation;
+  const { data: dataUrls, isLoading: isLoadingUrls, mutate: mutateUrls } = spotifyUrlsMutation;
 
 
-  const handleSearch = async () => {
+  const handleSearch = () => {
     mutate({
       url: searchValue,
     });
   };
   //si se apreta enter se hace el fetch
-  const handleOnKeyDown = async (e: KeyboardEvent<HTMLInputElement>) => {
+  const handleOnKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       handleSearch()
     } else {
@@ -58,16 +54,17 @@ export default function Home() {
     }
   };
 
-  const getDownloadUrls = async () => {
+  const getDownloadUrls = () => {
+    if (!data?.playlistId) return;
     mutateUrls({
-      playlistId: data.playlistId,
-      videos: data.videos,
-      playlistName: data.playlistName
+      playlistId: data?.playlistId,
+      videos: data?.videos,
+      playlistName: data?.playlistName
     });
   };
 
-  const downloadVideo = async (index: number) => {
-    window.open(dataUrls.urls[index], '_blank');
+  const downloadVideo = (index: number) => {
+    window.open(dataUrls?.urls[index], '_blank');
   };
 
 

@@ -1,5 +1,4 @@
-import Image from "next/image";
-import { ChangeEvent, KeyboardEvent } from "react";
+import type { ChangeEvent, KeyboardEvent } from "react";
 
 interface Props {
     searchValue: string;

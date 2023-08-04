@@ -1,6 +1,6 @@
 import { createTRPCRouter } from "~/server/api/trpc";
 import { playlistsRouter } from "./routers/playlists";
-import { userRouter } from "./routers/users";
+// import { userRouter } from "./routers/users";
 import { spotifyRouter } from "./routers/spotify";
 
 /**
@@ -10,7 +10,7 @@ import { spotifyRouter } from "./routers/spotify";
  */
 export const appRouter = createTRPCRouter({
   playlists: playlistsRouter,
-  users: userRouter,
+  // users: userRouter,
   spotify: spotifyRouter,
 });
 

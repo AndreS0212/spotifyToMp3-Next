@@ -2,6 +2,7 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import axios from "axios";
 import { env } from "~/env.mjs";
+import type { SpotifyInfo, SpotifyUrlsInfo } from "~/pages";
 
 const SpotifyGetDataRouterInputSchema = z.object({
   url: z.string(),
@@ -27,7 +28,7 @@ export const spotifyRouter = createTRPCRouter({
     .mutation(async (opts) => {
       const { input } = opts;
       const { url } = input;
-      let config = {
+      const config = {
         method: "post",
         maxBodyLength: Infinity,
         url: `${env.BACKEND_URL}/spotify`,
@@ -36,7 +37,8 @@ export const spotifyRouter = createTRPCRouter({
         },
         data: { url },
       };
-      const { data } = await axios.request(config);
+      const response = await axios.request(config);
+      const data: SpotifyInfo = response.data;
       return data;
     }), // Output transformer is now passed directly to createTRPCRouter
   getDowloandUrls: publicProcedure
@@ -44,7 +46,7 @@ export const spotifyRouter = createTRPCRouter({
     .mutation(async (opts) => {
       const { input } = opts;
       const { videos, playlistId, playlistName } = input;
-      let config = {
+      const config = {
         method: "post",
         maxBodyLength: Infinity,
         url: `${env.BACKEND_URL}/download`,
@@ -53,7 +55,8 @@ export const spotifyRouter = createTRPCRouter({
         },
         data: { playlistId, playlistName, videos },
       };
-      const { data } = await axios.request(config);
+      const response = await axios.request(config);
+      const data: SpotifyUrlsInfo = response.data;
       return data;
     }), // Output transformer is now passed directly to createTRPCRouter
 });
