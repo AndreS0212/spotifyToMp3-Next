@@ -1,5 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator client {
+  provider = "prisma-client-js"
+}
 
 datasource db {
   provider     = "mysql"
@@ -7,27 +8,39 @@ datasource db {
   relationMode = "prisma"
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model Playlist {
-  id        String   @id
+  id        String   @id 
   name      String
-  urls      Url[]  @relation("PlaylistToUrls") 
-  userId  String
+  userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  videos    Video[]  @relation("PlaylistToVideos")
 }
 
-model Url{
-  id        String   @id
-  url       String
-  playlist  Playlist @relation("PlaylistToUrls", fields: [id], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Video {
+  id         String   @id @default(uuid())
+  title      String
+  duration   String
+  channel    String
+  thumbnail  String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  youtubeUrl String   
+  playlist   Playlist @relation("PlaylistToVideos", fields: [playlistId], references: [id])
+  playlistId String
+  url        Url?     @relation("VideoToUrl")
+
+
+  @@index([playlistId])
+}
+
+model Url {
+  id         String   @id @default(uuid())
+  url        String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  youtubeUrl String   @unique
+  video      Video?   @relation("VideoToUrl", fields: [id], references: [id])
 
   @@index([id])
 }
-
-

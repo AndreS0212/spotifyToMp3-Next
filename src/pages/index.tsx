@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { api } from "~/utils/api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ChangeEvent, KeyboardEvent } from "react";
 import Search from "~/components/Search";
 import Gallery from "~/components/Gallery";
@@ -22,22 +22,42 @@ export interface SpotifyInfo {
 
 export interface SpotifyUrlsInfo {
   playlistId: string;
-  urls: string[];
+  url: string;
+  youtubeUrl: string;
+}
+
+export interface urls {
+  youtubeUrl: string;
+  url: string;
 }
 
 
 export default function Home() {
   const [searchValue, setSearchValue] = useState("");
+  const [urls, setUrls] = useState<urls[]>([
+  ]);
   //info de steam que llega del backend
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
   };
   //fetch a la api
   const spotifyMutation = api.spotify.getData.useMutation();
-  const spotifyUrlsMutation = api.spotify.getDowloandUrls.useMutation();
+  const spotifyUrlMutation = api.spotify.getDownloadUrl.useMutation();
 
   const { data, isLoading, mutate } = spotifyMutation;
-  const { data: dataUrls, isLoading: isLoadingUrls, mutate: mutateUrls } = spotifyUrlsMutation;
+  const { data: dataUrls, isLoading: isLoadingUrls, mutate: mutateUrls } = spotifyUrlMutation;
+
+  useEffect(() => {
+    if (dataUrls) {
+      setUrls((prevUrls) => [
+        ...prevUrls,
+        {
+          youtubeUrl: dataUrls.youtubeUrl,
+          url: dataUrls.url,
+        },
+      ]);
+    }
+  }, [dataUrls, setUrls]);
 
 
   const handleSearch = () => {
@@ -54,17 +74,18 @@ export default function Home() {
     }
   };
 
-  const getDownloadUrls = () => {
-    if (!data?.playlistId) return;
+  const getDownloadUrls = (url: string) => {
+    if (!data?.videos) return;
     mutateUrls({
-      playlistId: data?.playlistId,
-      videos: data?.videos,
-      playlistName: data?.playlistName
-    });
+      playlistId: data.playlistId,
+      playlistName: data.playlistName,
+      video: data.videos.find((item: Video) => item.url === url)!
+    })
   };
 
-  const downloadVideo = (index: number) => {
-    window.open(dataUrls?.urls[index], '_blank');
+  const downloadVideo = (youtubeUrl: string) => {
+    const url = urls?.find((item) => item.youtubeUrl === youtubeUrl)?.url;
+    window.open(url, '_blank');
   };
 
 
@@ -80,7 +101,7 @@ export default function Home() {
       <div className="flex flex-col justify-center">
         <Search searchValue={searchValue} handleSearch={handleSearch} handleSearchChange={handleSearchChange} handleOnKeyDown={handleOnKeyDown} />
         {isLoading && <span className="loading mx-auto mt-12 loading-spinner loading-lg"></span>}
-        <Gallery data={data} getDownloadUrls={getDownloadUrls} dataUrls={dataUrls} downloadVideo={(index) => downloadVideo(index)} isLoading={isLoadingUrls} />
+        <Gallery data={data} getDownloadUrls={getDownloadUrls} urls={urls} downloadVideo={(index) => downloadVideo(index)} isLoading={isLoadingUrls} />
       </div>
     </>
   );
