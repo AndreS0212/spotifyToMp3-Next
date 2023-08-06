@@ -30,10 +30,9 @@ const Gallery = ({ data, getDownloadUrls, downloadVideo, isLoading, urls }: Prop
                 {data && (
                     <thead>
                         <tr>
-                            <th></th>
+                            <th>Preview</th>
                             <th>Name</th>
-                            <th>duration</th>
-                            <th>Channel</th>
+                            <th>Duration</th>
                             <th>Download</th>
                         </tr>
                     </thead>)
@@ -52,7 +51,6 @@ const Gallery = ({ data, getDownloadUrls, downloadVideo, isLoading, urls }: Prop
                                     </td>
                                     <td>{item.title}</td>
                                     <td>{item.duration}</td>
-                                    <td>{item.channel}</td>
                                     <td className="h-[64px] w-[107px]">{isItemLoading(item.url) ? <span className="loading loading-spinner loading-md ms-7"></span> : <button className="bg-green-400 p-2 w-[85px]" onClick={checkStatus(item.url) ? () => downloadVideo(item.url) : () => handleGetDownloadUrl(item.url)}>{checkStatus(item.url) ? 'Download' : 'Get URL'}</button>}</td>
                                 </tr>
                             );

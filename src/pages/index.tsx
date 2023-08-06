@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import type { ChangeEvent, KeyboardEvent } from "react";
 import Search from "~/components/Search";
 import Gallery from "~/components/Gallery";
-
+import Swal from 'sweetalert2'
+import { useRouter } from "next/router";
 
 export interface Video {
   title: string;
@@ -31,8 +32,17 @@ export interface urls {
   url: string;
 }
 
+const swalError = async (title: string, text: string) => {
+  await Swal.fire({
+    title: title,
+    text: text,
+    icon: 'error',
+    confirmButtonText: 'Ok'
+  })
+}
 
 export default function Home() {
+  const router = useRouter();
   const [searchValue, setSearchValue] = useState("");
   const [urls, setUrls] = useState<urls[]>([
   ]);
@@ -44,8 +54,31 @@ export default function Home() {
   const spotifyMutation = api.spotify.getData.useMutation();
   const spotifyUrlMutation = api.spotify.getDownloadUrl.useMutation();
 
-  const { data, isLoading, mutate } = spotifyMutation;
-  const { data: dataUrls, isLoading: isLoadingUrls, mutate: mutateUrls } = spotifyUrlMutation;
+  const { data, isLoading, mutate, error } = spotifyMutation;
+  const { data: dataUrls, isLoading: isLoadingUrls, mutate: mutateUrls, error: errorUrls } = spotifyUrlMutation;
+
+  useEffect(() => {
+    if (error?.data) {
+      swalError(error.data.code, error.message).then(() => {
+        router.push('/sign-in')
+      }).catch((err) => {
+        console.log(err)
+      }
+      )
+    }
+  }, [error, router])
+
+  useEffect(() => {
+    if (errorUrls?.data) {
+      swalError(errorUrls.data.code, errorUrls.message).then(() => {
+        router.push('/sign-in')
+      }).catch((err) => {
+        console.log(err)
+      }
+      )
+    }
+  }, [errorUrls, router])
+
 
   useEffect(() => {
     if (dataUrls) {

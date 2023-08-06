@@ -3,6 +3,7 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import axios from "axios";
 import type { SpotifyInfo, SpotifyUrlsInfo, Video } from "~/pages";
+import { TRPCError } from "@trpc/server";
 
 interface VideoDb {
   title: string;
@@ -32,7 +33,7 @@ export const spotifyRouter = createTRPCRouter({
   getData: publicProcedure
     .input(SpotifyGetDataRouterInputSchema)
     .mutation(async (opts) => {
-      const { input } = opts;
+      const { input, ctx } = opts;
       const { url } = input;
       const config = {
         method: "post",
@@ -43,7 +44,7 @@ export const spotifyRouter = createTRPCRouter({
         },
         data: { url },
       };
-      const playlist = await opts.ctx.prisma.playlist.findUnique({
+      const playlist = await ctx.prisma.playlist.findUnique({
         where: { id: url.split("/playlist/")[1] },
         include: { videos: true },
       });
@@ -67,7 +68,7 @@ export const spotifyRouter = createTRPCRouter({
       const response = await axios.request(config);
       const data: SpotifyInfo = response.data;
 
-      await opts.ctx.prisma.video.createMany({
+      await ctx.prisma.video.createMany({
         data: data.videos.map((video: Video) => ({
           title: video.title,
           duration: video.duration,
@@ -78,20 +79,11 @@ export const spotifyRouter = createTRPCRouter({
         })),
       });
 
-      await opts.ctx.prisma.playlist.create({
+      await ctx.prisma.playlist.create({
         data: {
           name: data.playlistName,
-          userId: data.playlistId,
+          userId: ctx.auth.sessionId ?? data.playlistId,
           id: data.playlistId,
-          // videos: {
-          //   create: data.videos.map((video: Video) => ({
-          //     title: video.title,
-          //     duration: video.duration,
-          //     channel: video.channel,
-          //     thumbnail: video.thumbnail,
-          //     youtubeUrl: video.url,
-          //   })),
-          // },
         },
       });
 
@@ -100,8 +92,13 @@ export const spotifyRouter = createTRPCRouter({
   getDownloadUrl: publicProcedure
     .input(SpotifyGetDowloandUrlRouterInputSchema)
     .mutation(async (opts) => {
-      const { input } = opts;
+      const { input, ctx } = opts;
       const { video, playlistId, playlistName } = input;
+      if (ctx.auth.sessionId === null)
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You must be logged in to use this feature",
+        });
       const config = {
         method: "post",
         maxBodyLength: Infinity,
@@ -111,8 +108,27 @@ export const spotifyRouter = createTRPCRouter({
         },
         data: { playlistId, playlistName, video },
       };
+      const videoDb = await ctx.prisma.video.findUnique({
+        where: { youtubeUrl: video.url },
+        include: { url: true, playlist: true },
+      });
+      if (videoDb?.url?.url) {
+        const data: SpotifyUrlsInfo = {
+          url: videoDb.url.url,
+          youtubeUrl: videoDb.youtubeUrl,
+          playlistId: videoDb.playlist.id,
+        };
+        return data;
+      }
       const response = await axios.request(config);
       const data: SpotifyUrlsInfo = response.data;
+      await ctx.prisma.url.create({
+        data: {
+          url: data.url,
+          youtubeUrl: data.youtubeUrl,
+        },
+      });
+
       return data;
     }), // Output transformer is now passed directly to createTRPCRouter
 });

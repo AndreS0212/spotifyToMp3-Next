@@ -15,6 +15,8 @@ model Playlist {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   videos    Video[]  @relation("PlaylistToVideos")
+
+  @@map("playlists")
 }
 
 model Video {
@@ -25,13 +27,14 @@ model Video {
   thumbnail  String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  youtubeUrl String   
+  youtubeUrl String   @unique
   playlist   Playlist @relation("PlaylistToVideos", fields: [playlistId], references: [id])
   playlistId String
   url        Url?     @relation("VideoToUrl")
 
 
   @@index([playlistId])
+  @@map("videos")
 }
 
 model Url {
@@ -40,7 +43,8 @@ model Url {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   youtubeUrl String   @unique
-  video      Video?   @relation("VideoToUrl", fields: [id], references: [id])
+  video      Video?   @relation("VideoToUrl", fields: [youtubeUrl], references: [youtubeUrl])
 
   @@index([id])
+  @@map("urls")
 }
