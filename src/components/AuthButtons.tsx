@@ -2,6 +2,9 @@ import { SignInButton, SignOutButton, SignUpButton, useUser, UserButton } from "
 
 const AuthButtons = () => {
     const { user } = useUser();
+    const redirectToSignIn = () => {
+        window.location.reload()
+    };
     if (user) {
         return (
             <div className="flex flex-row items-center gap-2">
@@ -12,7 +15,7 @@ const AuthButtons = () => {
     } else {
         return (
             <div className="flex flex-row items-center gap-4">
-                <SignInButton redirectUrl="/callback" />
+                <SignInButton />
                 <SignUpButton />
             </div>
         );
