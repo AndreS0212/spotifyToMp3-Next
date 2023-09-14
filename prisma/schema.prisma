@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider     = "mysql"
-  url          = env("DATABASE_URL")
+  url          = "mysql://zofhiw7p8gltkul3rwp8:pscale_pw_lpCdnRYZLOli40cbH9YWXLIQHSk052UxRi8zlZh3t6n@aws.connect.psdb.cloud/spotifymp3db?sslaccept=strict"
   relationMode = "prisma"
 }
 
