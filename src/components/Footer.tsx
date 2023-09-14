@@ -9,10 +9,10 @@ const Footer = () => {
             </div>
             <div className="grid-flow-col gap-4 md:place-self-center md:justify-self-end">
 
-                <a href="https://www.linkedin.com/in/carlos-soca/"><Image src='/linkedin-icon.svg' alt='Linkedin logo' width={30} height={30} /></a>
-                <a href="https://github.com/AndreS0212"><Image src='/github-icon.svg' alt='Linkedin logo' width={30} height={30} /></a>
-                <a ><Image src='/twitter-icon.svg' alt='Linkedin logo' width={30} height={30} /></a>
-                <a href="https://github.com/AndreS0212"><Image src='/bitbucket-icon.svg' alt='Linkedin logo' width={30} height={30} /></a>
+                <a href="https://www.linkedin.com/in/carlos-soca/"><Image src='/linkedin-icon.svg' alt='Linkedin' width={30} height={30} /></a>
+                <a href="https://github.com/AndreS0212"><Image src='/github-icon.svg' alt='Github logo' width={30} height={30} /></a>
+                <a ><Image src='/twitter-icon.svg' alt='Twitter logo' width={30} height={30} /></a>
+                <a href="https://github.com/AndreS0212"><Image src='/bitbucket-icon.svg' alt='Bitbucket logo' width={30} height={30} /></a>
             </div>
         </footer>
     )
