@@ -38,7 +38,7 @@ export const spotifyRouter = createTRPCRouter({
       const config = {
         method: "post",
         maxBodyLength: Infinity,
-        url: `https://lof2b1na52.execute-api.us-east-1.amazonaws.com/spotify`,
+        url: `${process.env.BACKEND_URL}/spotify`,
         headers: {
           "Content-Type": "application/json",
         },
@@ -102,7 +102,7 @@ export const spotifyRouter = createTRPCRouter({
       const config = {
         method: "post",
         maxBodyLength: Infinity,
-        url: `https://lof2b1na52.execute-api.us-east-1.amazonaws.com/download`,
+        url: `${process.env.BACKEND_URL}/download`,
         headers: {
           "Content-Type": "application/json",
         },
