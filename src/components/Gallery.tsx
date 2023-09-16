@@ -25,10 +25,10 @@ const Gallery = ({ data, getDownloadUrls, downloadVideo, isLoading, urls }: Prop
 
     return (
 
-        <div className="overflow-x-auto mt-3">
-            <table className="table">
+        <div className="overflow-x-auto mt-3 text-white">
+            <table className="table ">
                 {data && (
-                    <thead>
+                    <thead className="text-white text-lg">
                         <tr>
                             <th>Preview</th>
                             <th>Name</th>
