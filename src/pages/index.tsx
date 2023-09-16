@@ -9,10 +9,10 @@ import { useRouter } from "next/router";
 import type { Video, urls } from "~/utils/interfaces";
 
 
-const swalError = async (title: string, text: string) => {
+const swalError = async (title: string) => {
   await Swal.fire({
     title: title,
-    text: text,
+    text: 'Something went wrong, please try again later',
     icon: 'error',
     confirmButtonText: 'Ok'
   })
@@ -36,7 +36,7 @@ export default function Home() {
 
   useEffect(() => {
     if (error?.data) {
-      swalError(error.data.code, error.message).then(() => {
+      swalError(error.data.code,).then(() => {
         router.push('/sign-in')
       }).catch((err) => {
         console.log(err)
@@ -47,7 +47,7 @@ export default function Home() {
 
   useEffect(() => {
     if (errorUrls?.data) {
-      swalError(errorUrls.data.code, errorUrls.message).then(() => {
+      swalError(errorUrls.data.code,).then(() => {
         router.push('/sign-in')
       }).catch((err) => {
         console.log(err)
