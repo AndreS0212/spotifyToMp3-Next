@@ -5,9 +5,8 @@ export default authMiddleware({
     "/api/trpc/spotify.getData",
     "/api/trpc/spotify.getDownloadUrl",
   ],
-  secretKey: "sk_test_oy7FBLkWXp9XSWN2t1LJmujSojiGHC4zkQg5YgtHfL",
-  publishableKey:
-    "pk_test_cmVsZXZhbnQtb2FyZmlzaC0xNi5jbGVyay5hY2NvdW50cy5kZXYk",
+  secretKey: process.env.CLERK_SECRET_KEY,
+  publishableKey: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
 });
 
 export const config = {

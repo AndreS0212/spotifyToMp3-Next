@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useState } from "react";
-import type { SpotifyInfo, Video, urls } from "~/pages";
+import type { SpotifyInfo, Video, urls } from "../utils/interfaces";
 
 interface Props {
     data: SpotifyInfo | undefined;

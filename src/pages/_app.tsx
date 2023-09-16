@@ -10,7 +10,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       <Layout>
         <Component {...pageProps} />
       </Layout>
-    </ClerkProvider>
+    </ClerkProvider >
   )
 };
 

@@ -2,7 +2,7 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import axios from "axios";
-import type { SpotifyInfo, SpotifyUrlsInfo, Video } from "~/pages";
+import type { SpotifyInfo, SpotifyUrlsInfo, Video } from "~/utils/interfaces";
 import { TRPCError } from "@trpc/server";
 
 interface VideoDb {
