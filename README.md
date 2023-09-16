@@ -34,6 +34,9 @@ To run this project locally, follow these steps:
 2. Input a Spotify playlist link.
 3. Download MP3s from the playlist with ease.
 
+## Deploy
+  https://main.d3h4gzq4tavb3f.amplifyapp.com/
+  
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
